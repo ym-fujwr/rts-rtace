@@ -16,23 +16,24 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CreateDependency {
-    public void startCreate() {
-        File d = new File("data/selogger/dataids.txt");
-        File m = new File("data/selogger/methods.txt");
-        File c = new File("data/selogger/classes.txt");
-        List<TestInfo> test = new ArrayList<TestInfo>();
 
+    private File d = new File("data/selogger/dataids.txt");
+    //private File m = new File("data/selogger/methods.txt");
+    private File c = new File("data/selogger/classes.txt");
+    private List<String> classes = readClasses(c);
+    //private List<String> methods = readMethods(m);
+
+    
+    public void startCreate() {
+        List<TestInfo> test = new ArrayList<TestInfo>();
         ReadDataIdResult result = readDataId(d);
         List<List<String>> ids = result.getIds();
         List<String> range = result.getRange();
 
-        List<String> classes = readClasses(c);
-        List<String> methods = readMethods(m);
-
         File f1 = new File("data/selogger/");
         int eventFreqNum = f1.list().length - 7;
         for (int i = 1; i < eventFreqNum; i++) {
-            test.add(getTestInfo(i, ids, range, classes, methods));
+            test.add(getTestInfo(i, ids, range));
         }
         /*ファイルの中身削除してる */
         try {
@@ -141,13 +142,13 @@ public class CreateDependency {
         return c;
     }
 
-    public TestInfo getTestInfo(int i, List<List<String>> ids, List<String> range, List<String> classes,List<String> methods) {
+    public TestInfo getTestInfo(int i, List<List<String>> ids, List<String> range) {
         List<String> idOnly = new ArrayList<>();
         idOnly = getIdOnly(i);
         /* dataIDからクラス名と行数を取得．クラス単位で． */
         List<ClassInfo> classInfoList = new ArrayList<ClassInfo>();
         List<String> lines = new ArrayList<>();
-        String currentClassId = getClassId(idOnly.get(0), range, classes);
+        String currentClassId = getClassId(idOnly.get(0), range);
 
         /*テストメソッド名を加工 */
         String t = ids.get(Integer.parseInt(idOnly.get(0)) - 1).get(7);
@@ -158,7 +159,7 @@ public class CreateDependency {
 
 
         for (int j = 1; j < idOnly.size(); j++) {
-            String classId = getClassId(idOnly.get(j), range, classes);
+            String classId = getClassId(idOnly.get(j), range);
             if (currentClassId.equals(classId)) {
                 /* 行数をclassinfoのlistに入れる */
                 lines.add(ids.get(Integer.parseInt(idOnly.get(j))).get(3));
@@ -210,7 +211,7 @@ public class CreateDependency {
 
 
     /* dataidから該当するクラスのIDを返す */
-    public String getClassId(String id, List<String> range, List<String> classes) {
+    public String getClassId(String id, List<String> range) {
         for (int i = 0; i < classes.size() - 1; i++) {
             if ((Integer.parseInt(range.get(i)) <= Integer.parseInt(id))
                     & (Integer.parseInt(id) < Integer.parseInt(range.get(i + 1)))) {
