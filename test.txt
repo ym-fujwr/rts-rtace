@@ -1,0 +1,15 @@
+org/apache/commons/cli/CommandLineTest#testGetOptions
+org/apache/commons/cli/CommandLineTest#testBuilder
+org/apache/commons/cli/bug/BugsTest#test12210
+org/apache/commons/cli/ArgumentIsOptionTest#testOptionWithArgument
+org/apache/commons/cli/ArgumentIsOptionTest#testOptionAndOptionWithArgument
+org/apache/commons/cli/ArgumentIsOptionTest#testOption
+org/apache/commons/cli/ValueTest#testLongOptionalArgValuesWithOption
+org/apache/commons/cli/ValueTest#testShortOptionalNArgValuesWithOption
+org/apache/commons/cli/ValueTest#testShortOptionalArgValues
+org/apache/commons/cli/ValueTest#testShortOptionalArgValuesWithOption
+org/apache/commons/cli/ValueTest#testLongOptionalNArgValuesWithOption
+org/apache/commons/cli/ValueTest#testLongOptionalNArgValues
+org/apache/commons/cli/ValueTest#testLongOptionalArgValues
+org/apache/commons/cli/ValueTest#testShortOptionalNArgValues
+org/apache/commons/cli/ValuesTest#testExtraArgs

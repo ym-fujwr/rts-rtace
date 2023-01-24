@@ -12,18 +12,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CreateDependency {
 
     private File d = new File("data/selogger/dataids.txt");
-    //private File m = new File("data/selogger/methods.txt");
+    // private File m = new File("data/selogger/methods.txt");
     private File c = new File("data/selogger/classes.txt");
     private List<String> classes = readClasses(c);
-    //private List<String> methods = readMethods(m);
+    // private List<String> methods = readMethods(m);
 
-    
     public void startCreate() {
         List<TestInfo> test = new ArrayList<TestInfo>();
         ReadDataIdResult result = readDataId(d);
@@ -35,10 +33,9 @@ public class CreateDependency {
         for (int i = 1; i < eventFreqNum; i++) {
             test.add(getTestInfo(i, ids, range));
         }
-        /*ファイルの中身削除してる */
+        /* ファイルの中身削除してる */
         try {
-            FileOutputStream fos1 = new FileOutputStream("data/json/dependency.txt", false);
-            FileOutputStream fos2 = new FileOutputStream("data/json/testMethod.txt", false);
+            FileOutputStream fos1 = new FileOutputStream("data/json/dependency.json", false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,25 +43,20 @@ public class CreateDependency {
          * ListをJSON形式でファイルに出力
          */
         ObjectMapper objectMapper = new ObjectMapper();
-        for(TestInfo t : test){
-            try {
-                String testNameJson = objectMapper.writeValueAsString(t);
-                String classInfoJson = objectMapper.writeValueAsString(t.classInfoList);
-                try {
-                    File dFile = new File("data/json/dependency.txt");
-                    File tFile = new File("data/json/testMethod.txt");
-                    FileWriter filewriter1 = new FileWriter(dFile,true);
-                    FileWriter filewriter2 = new FileWriter(tFile,true);
-                    filewriter1.write(classInfoJson);
-                    filewriter2.write(testNameJson);
-                    filewriter1.close();
-                    filewriter2.close();
-                } catch (IOException e) {
-                    System.out.println(e);
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+
+        String tPath = "data/json/dependency.json";
+        String testNameJson = "[";
+        try {
+            File f = new File(tPath);
+            FileWriter filewriter2 = new FileWriter(f, true);
+            for (TestInfo t : test) {
+                testNameJson += objectMapper.writeValueAsString(t);
+                testNameJson += ",";
             }
+            filewriter2.write(testNameJson.substring(0, testNameJson.length() - 1) + "]");
+            filewriter2.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
@@ -150,13 +142,16 @@ public class CreateDependency {
         List<String> lines = new ArrayList<>();
         String currentClassId = getClassId(idOnly.get(0), range);
 
-        /*テストメソッド名を加工 */
-        String t = ids.get(Integer.parseInt(idOnly.get(0)) - 1).get(7);
-        String testMethodName = t.substring(0,t.indexOf("#",t.indexOf("#")+1));
+        /* テストメソッド名を加工 */
+        String t = null;
+        t = ids.get(Integer.parseInt(idOnly.get(0)) - 1).get(7);
+        String testMethodName = null;
+        if (t.indexOf("test") > -1) {
+            testMethodName = t.substring(0, t.indexOf("#", t.indexOf("#") + 1));
+        }
 
-        /*初めの行　どうせ0 */
-        //lines.add(ids.get(Integer.parseInt(idOnly.get(0))).get(3));
-
+        /* 初めの行 どうせ0 */
+        // lines.add(ids.get(Integer.parseInt(idOnly.get(0))).get(3));
 
         for (int j = 1; j < idOnly.size(); j++) {
             String classId = getClassId(idOnly.get(j), range);
@@ -167,20 +162,31 @@ public class CreateDependency {
                 /* 新たなclassinfoを作り，行数をlistに入れる */
                 Set<String> tmpSet = new LinkedHashSet<String>(lines);
                 List<String> lines2 = new ArrayList<String>(tmpSet);
-                ClassInfo ci = new ClassInfo(classes.get(Integer.parseInt(currentClassId)),lines2);
+                ClassInfo ci = new ClassInfo(classes.get(Integer.parseInt(currentClassId)), lines2);
                 classInfoList.add(ci);
                 lines.clear();
                 lines.add(ids.get(Integer.parseInt(idOnly.get(j))).get(3));
                 currentClassId = classId;
             }
+            /*
+             * 今探索中のテストメソッドかどうか確認．
+             */
+            if (ids.get(Integer.parseInt(idOnly.get(j))).get(5).equals("METHOD_ENTRY")) {
+                t = ids.get(Integer.parseInt(idOnly.get(j)) - 1).get(7);
+                if (t.indexOf("#test") > -1) {
+                    testMethodName = t.substring(0, t.indexOf("#", t.indexOf("#") + 1));
+                }
+            }
         }
-        /*最後のクラスの情報を格納 */
+        /* 最後のクラスの情報を格納 */
         Set<String> tmpSet = new LinkedHashSet<String>(lines);
         List<String> lines2 = new ArrayList<String>(tmpSet);
         ClassInfo ci = new ClassInfo(classes.get(Integer.parseInt(currentClassId)), lines2);
         classInfoList.add(ci);
 
-
+        if (testMethodName == null) {
+            System.out.println("eventfreq" + i);
+        }
         TestInfo result = new TestInfo(testMethodName, classInfoList);
         return result;
     }
@@ -209,7 +215,6 @@ public class CreateDependency {
         return result;
     }
 
-
     /* dataidから該当するクラスのIDを返す */
     public String getClassId(String id, List<String> range) {
         for (int i = 0; i < classes.size() - 1; i++) {
@@ -221,7 +226,7 @@ public class CreateDependency {
         return Integer.toString(classes.size() - 1);
     }
 
-    public class TestInfo {
+    public static class TestInfo {
         private String testName;
         private List<ClassInfo> classInfoList;
 
@@ -230,8 +235,15 @@ public class CreateDependency {
             this.classInfoList = classInfoList;
         }
 
+        TestInfo() {
+        }
+
         public String getTestName() {
             return this.testName;
+        }
+
+        public List<ClassInfo> getClassInfoList() {
+            return this.classInfoList;
         }
 
         public void setTestName(String testName) {
@@ -243,13 +255,16 @@ public class CreateDependency {
         }
     }
 
-    public class ClassInfo {
+    public static class ClassInfo {
         private String className;
         private List<String> line;
 
         ClassInfo(String className, List<String> line) {
             this.className = className;
             this.line = line;
+        }
+
+        ClassInfo() {
         }
 
         public void setClassName(String className) {
