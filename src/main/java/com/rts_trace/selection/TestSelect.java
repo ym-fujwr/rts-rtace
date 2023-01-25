@@ -154,10 +154,6 @@ public class TestSelect {
             }
             if (d != 0) {
                 for (String l : lines) {
-                    /*
-                     * TODO
-                     * 直前行が実行されているテストケースを選択する際，1行前だけでなく，それより前も探索する必要あり．
-                     */
                     int i = 1;
                     while (c - i > 0) {
                         if (c - i == Integer.parseInt(l)) {

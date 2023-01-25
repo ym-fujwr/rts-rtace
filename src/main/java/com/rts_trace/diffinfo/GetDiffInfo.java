@@ -10,7 +10,8 @@ import java.util.List;
 
 public class GetDiffInfo {
     private File gitDiffFile = new File("data/gitdiff.txt");
-        /*
+
+    /*
      * git diff から変更のあったクラス名と行数を取得．
      * 
      * @@ a,b c,d @@
