@@ -14,8 +14,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rts_trace.dependency.CreateDependency.ClassInfo;
-import com.rts_trace.dependency.CreateDependency.TestInfo;
+import com.rts_trace.dependency.info.ClassInfo;
+import com.rts_trace.dependency.info.TestInfo;
+import com.rts_trace.diffinfo.DiffInfo;
+import com.rts_trace.diffinfo.DiffLineInfo;
 
 public class TestSelect {
     private File gitDiffFile = new File("data/gitdiff.txt");
@@ -117,8 +119,8 @@ public class TestSelect {
             /* gitdiffとdependencyを用いて関連するテストケースを抽出 */
             LOOP1: for (ClassInfo c : t.getClassInfoList()) {
                 for (DiffInfo d : gitDiff) {
-                    if (d.className.indexOf(c.getClassName()) > -1) {
-                        if (isContain(c.getLine(), d.lineInfo)) {
+                    if (d.getClassName().indexOf(c.getClassName()) > -1) {
+                        if (isContain(c.getLine(), d.getLineInfo())) {
                             /*
                              * 該当するテストケースを選択
                              * 必要ないループは抜けるように処理記述
@@ -170,50 +172,4 @@ public class TestSelect {
         return false;
     }
 
-    public class DiffInfo {
-        private String className;
-        private List<DiffLineInfo> lineInfo;
-
-        DiffInfo(String className, List<DiffLineInfo> lineInfo) {
-            this.className = className;
-            this.lineInfo = lineInfo;
-        }
-    }
-
-    /*
-     * @@ a,b c,d @@
-     * aは元ファイル始まり行
-     * bは元ファイルのdiff hunkの行数
-     * cは新ファイル始まり行
-     * dは新ファイルのdiff hunkの行数
-     */
-    public class DiffLineInfo {
-        private String preStartLine;
-        private String preHunkLine;
-        private String curStartLine;
-        private String curHunkLine;
-
-        DiffLineInfo(String preStartLine, String preHunkLine, String curStartLine, String curHunkLine) {
-            this.preStartLine = preStartLine;
-            this.preHunkLine = preHunkLine;
-            this.curStartLine = curStartLine;
-            this.curHunkLine = curHunkLine;
-        }
-
-        public String getPreStartLine() {
-            return this.preStartLine;
-        }
-
-        public String getPreHunkLine() {
-            return this.preHunkLine;
-        }
-
-        public String getCurStartLine() {
-            return this.curStartLine;
-        }
-
-        public String getCurHunkLine() {
-            return this.curHunkLine;
-        }
-    }
 }

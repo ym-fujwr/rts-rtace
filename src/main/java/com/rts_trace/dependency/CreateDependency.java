@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rts_trace.dependency.info.ClassInfo;
+import com.rts_trace.dependency.info.ReadDataIdResult;
+import com.rts_trace.dependency.info.TestInfo;
 
 public class CreateDependency {
 
@@ -36,6 +39,7 @@ public class CreateDependency {
         /* ファイルの中身削除してる */
         try {
             FileOutputStream fos1 = new FileOutputStream("data/json/dependency.json", false);
+            fos1.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -226,79 +230,4 @@ public class CreateDependency {
         return Integer.toString(classes.size() - 1);
     }
 
-    public static class TestInfo {
-        private String testName;
-        private List<ClassInfo> classInfoList;
-
-        TestInfo(String testName, List<ClassInfo> classInfoList) {
-            this.testName = testName;
-            this.classInfoList = classInfoList;
-        }
-
-        TestInfo() {
-        }
-
-        public String getTestName() {
-            return this.testName;
-        }
-
-        public List<ClassInfo> getClassInfoList() {
-            return this.classInfoList;
-        }
-
-        public void setTestName(String testName) {
-            this.testName = testName;
-        }
-
-        public void setClass(List<ClassInfo> classInfoList) {
-            this.classInfoList = classInfoList;
-        }
-    }
-
-    public static class ClassInfo {
-        private String className;
-        private List<String> line;
-
-        ClassInfo(String className, List<String> line) {
-            this.className = className;
-            this.line = line;
-        }
-
-        ClassInfo() {
-        }
-
-        public void setClassName(String className) {
-            this.className = className;
-        }
-
-        public void setLine(List<String> line) {
-            this.line = line;
-        }
-
-        public String getClassName() {
-            return this.className;
-        }
-
-        public List<String> getLine() {
-            return this.line;
-        }
-    }
-
-    public class ReadDataIdResult {
-        private List<List<String>> ids;
-        private List<String> range;
-
-        ReadDataIdResult(List<List<String>> ids, List<String> range) {
-            this.ids = ids;
-            this.range = range;
-        }
-
-        public List<List<String>> getIds() {
-            return this.ids;
-        }
-
-        public List<String> getRange() {
-            return this.range;
-        }
-    }
 }
