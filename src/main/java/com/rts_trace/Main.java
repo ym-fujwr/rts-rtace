@@ -3,6 +3,7 @@ package com.rts_trace;
 import java.io.File;
 
 import com.rts_trace.dependency.CreateDependency;
+import com.rts_trace.dependency.UpdateLineInfo;
 import com.rts_trace.selection.TestSelect;
 
 public class Main {
@@ -21,6 +22,8 @@ public class Main {
             System.out.println("select test and update dependency");
             TestSelect t = new TestSelect();
             t.startSelect();
+            UpdateLineInfo uti = new UpdateLineInfo();
+            uti.startUpdateLineInfo();
         }
     }
 

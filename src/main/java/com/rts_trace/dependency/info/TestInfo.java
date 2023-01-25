@@ -11,6 +11,10 @@ public class TestInfo {
         this.classInfoList = classInfoList;
     }
 
+    public TestInfo(){
+        
+    }
+
     public String getTestName() {
         return this.testName;
     }

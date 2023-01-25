@@ -10,7 +10,9 @@ public class ClassInfo {
         this.className = className;
         this.line = line;
     }
-
+    public ClassInfo(){
+        
+    }
 
     public void setClassName(String className) {
         this.className = className;
