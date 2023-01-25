@@ -14,7 +14,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rts_trace.dependency.info.ClassInfo;
-import com.rts_trace.dependency.info.ReadDataIdResult;
+import com.rts_trace.dependency.info.ReadDataIdInfo;
 import com.rts_trace.dependency.info.TestInfo;
 
 public class CreateDependency {
@@ -27,7 +27,7 @@ public class CreateDependency {
 
     public void startCreate() {
         List<TestInfo> test = new ArrayList<TestInfo>();
-        ReadDataIdResult result = readDataId(d);
+        ReadDataIdInfo result = readDataId(d);
         List<List<String>> ids = result.getIds();
         List<String> range = result.getRange();
 
@@ -65,7 +65,7 @@ public class CreateDependency {
 
     }
 
-    public ReadDataIdResult readDataId(File f) {
+    public ReadDataIdInfo readDataId(File f) {
         List<List<String>> ids = new ArrayList<List<String>>();
         List<String> range = new ArrayList<>();
         try {
@@ -93,7 +93,7 @@ public class CreateDependency {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        ReadDataIdResult result = new ReadDataIdResult(ids, range);
+        ReadDataIdInfo result = new ReadDataIdInfo(ids, range);
         return result;
     }
 
