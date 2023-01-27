@@ -22,8 +22,8 @@ public class Main {
             System.out.println("select test and update dependency");
             TestSelect t = new TestSelect();
             t.startSelect();
-            UpdateLineInfo uti = new UpdateLineInfo();
-            uti.startUpdateLineInfo();
+            UpdateLineInfo uli = new UpdateLineInfo();
+            uli.startUpdateLineInfo();
         }
     }
 

@@ -21,10 +21,8 @@ import com.rts_trace.dependency.info.TestInfo;
 public class CreateDependency {
 
     private File d = new File("data/selogger/dataids.txt");
-    // private File m = new File("data/selogger/methods.txt");
     private File c = new File("data/selogger/classes.txt");
     private List<String> classes = readClasses(c);
-    // private List<String> methods = readMethods(m);
 
     public void startCreate() {
         List<TestInfo> test = new ArrayList<TestInfo>();
@@ -155,9 +153,6 @@ public class CreateDependency {
             testMethodName = t.substring(0, t.indexOf("#", t.indexOf("#") + 1));
         }
 
-        /* 初めの行 どうせ0 */
-        // lines.add(ids.get(Integer.parseInt(idOnly.get(0))).get(3));
-
         for (int j = 1; j < idOnly.size(); j++) {
             String classId = getClassId(idOnly.get(j), range);
             if (currentClassId.equals(classId)) {
@@ -167,7 +162,7 @@ public class CreateDependency {
                 /* 新たなclassinfoを作り，行数をlistに入れる */
                 Set<String> tmpSet = new LinkedHashSet<String>(lines);
                 List<String> lines2 = new ArrayList<String>(tmpSet);
-                Collections.sort(lines2);
+                Collections.sort(lines2, (s1, s2) -> Integer.parseInt(s1) - Integer.parseInt(s2));
                 ClassInfo ci = new ClassInfo(classes.get(Integer.parseInt(currentClassId)), lines2);
                 classInfoList.add(ci);
                 lines.clear();

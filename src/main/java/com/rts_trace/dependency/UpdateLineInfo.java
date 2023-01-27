@@ -1,6 +1,7 @@
 package com.rts_trace.dependency;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,6 +28,9 @@ public class UpdateLineInfo {
         Update(lineInfo);
     }
 
+    /*
+     * git diffの情報から，　行数をどれだけ変更すればよいかの情報を抽出
+     */
     public List<LineInfo> getLineInfo() {
         List<LineInfo> result = new ArrayList<>();
 
@@ -102,26 +106,46 @@ public class UpdateLineInfo {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+
         for(TestInfo t : dependency){
             for(ClassInfo c : t.getClassInfoList()){
                 for(LineInfo l : lineInfo){
-                    if(c.getClassName().equals(l.getClassName())){
-                LOOPI:  for(int i=0;i<l.getNumValue().size()-1 ;i++){
+                    if(l.getClassName().indexOf(c.getClassName())>-1){
+                      for(int i=0;i<l.getNumValue().size() ;i++){
                             for(int j=0;j<c.getLine().size();j++){
-                                if(Integer.parseInt(c.getLine().get(j)) < Integer.parseInt(l.getStartLine().get(i))){
-                                    continue;
-                                } else if(Integer.parseInt(l.getStartLine().get(i))>=Integer.parseInt(c.getLine().get(j)) && Integer.parseInt(c.getLine().get(j))  < Integer.parseInt(l.getStartLine().get(i+1)) ){
-                                    //更新
-                                    int newLineTmp = Integer.parseInt(c.getLine().get(j))  + Integer.parseInt(l.getNumValue().get(i));
-                                    c.setLineEle(i, Integer.valueOf(newLineTmp).toString());
-                                } else if(Integer.parseInt(c.getLine().get(j)) >= Integer.parseInt(l.getStartLine().get(i))){
-                                    break LOOPI;
+                                if(i==l.getNumValue().size()-1){
+                                    if(Integer.parseInt(c.getLine().get(j)) < Integer.parseInt(l.getStartLine().get(i))){
+                                        continue;
+                                    } else if( (Integer.parseInt(c.getLine().get(j)) >= Integer.parseInt(l.getStartLine().get(i)) ) ){
+                                        //更新
+                                        int newLineTmp = Integer.parseInt(c.getLine().get(j))  + Integer.parseInt(l.getNumValue().get(i));
+                                        c.setLineEle(j, Integer.valueOf(newLineTmp).toString());
+                                    } 
+                                }else{
+                                    if(Integer.parseInt(c.getLine().get(j)) < Integer.parseInt(l.getStartLine().get(i))){
+                                        continue;
+                                    } else if( (Integer.parseInt(c.getLine().get(j)) >= Integer.parseInt(l.getStartLine().get(i)) ) && (Integer.parseInt(c.getLine().get(j))  < Integer.parseInt(l.getStartLine().get(i+1)) )){
+                                        //更新
+                                        int newLineTmp = Integer.parseInt(c.getLine().get(j))  + Integer.parseInt(l.getNumValue().get(i));
+                                        c.setLineEle(j, Integer.valueOf(newLineTmp).toString());
+                                    } else if(Integer.parseInt(c.getLine().get(j)) >= Integer.parseInt(l.getStartLine().get(i))){
+                                        break;
+                                    }
                                 }
+
                             }
                         }
                     }
                 }
             }
+        }
+
+        /* ファイルの中身削除してる */
+        try {
+            FileOutputStream fos1 = new FileOutputStream("data/json/updated.json", false);
+            fos1.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         //ファイルに書き込み
         String tPath = "data/json/updated.json";
