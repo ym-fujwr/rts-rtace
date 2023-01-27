@@ -22,6 +22,9 @@ public class ClassInfo {
         this.line = line;
     }
 
+    public void setLineEle(int idx,String element){
+        this.line.set(idx,element);
+    }
     public String getClassName() {
         return this.className;
     }

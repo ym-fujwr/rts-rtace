@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -166,6 +167,7 @@ public class CreateDependency {
                 /* 新たなclassinfoを作り，行数をlistに入れる */
                 Set<String> tmpSet = new LinkedHashSet<String>(lines);
                 List<String> lines2 = new ArrayList<String>(tmpSet);
+                Collections.sort(lines2);
                 ClassInfo ci = new ClassInfo(classes.get(Integer.parseInt(currentClassId)), lines2);
                 classInfoList.add(ci);
                 lines.clear();
