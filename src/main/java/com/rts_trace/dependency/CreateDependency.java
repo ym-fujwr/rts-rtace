@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,28 +23,67 @@ import com.rts_trace.dependency.info.TestInfo;
 
 public class CreateDependency {
 
-    private File d = new File("data/selogger/dataids.txt");
     private File c = new File("data/selogger/classes.txt");
     private List<String> classes = readClasses(c);
 
     public void startCreate() {
+        File d = new File("data/selogger/dataids.txt");
         List<TestInfo> test = new ArrayList<TestInfo>();
         ReadDataIdInfo result = readDataId(d);
         List<List<String>> ids = result.getIds();
         List<String> range = result.getRange();
-
         File f1 = new File("data/selogger/");
         int eventFreqNum = f1.list().length - 7;
+        File dep = new File("data/json/dependency.json");
+        List<TestInfo> dependency = null;
+
         for (int i = 1; i < eventFreqNum; i++) {
             test.add(getTestInfo(i, ids, range));
         }
-        /* ファイルの中身削除してる */
+
+        /* 2回目以降の更新フェーズの場合． */
+        if (dep.exists()) {
+            /*
+             * dependency.jsonの中身を取得
+             */
+            ObjectMapper objectMapper = new ObjectMapper();
+            Path dependencyPath = Paths.get("data/json/dependency.json");
+            try {
+                String dependencyJson = Files.readString(dependencyPath);
+                dependency = Arrays.asList(objectMapper.readValue(dependencyJson, TestInfo[].class));
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+
+            /*
+             * dependency.json と 取得したtestから更新
+             */
+            for (TestInfo t : test) {
+                for (int i=0; i<dependency.size();i++) {
+                    if (t.getTestName().equals(dependency.get(i).getTestName())) {
+                        dependency.set(i,t);
+                        break;
+                    }
+                }
+            }
+            System.out.println("updated");
+        }else{
+            dependency = test;
+        }
+
+        /* dependency.jsonのファイルの中身とseloggerのファイル削除してる */
         try {
             FileOutputStream fos1 = new FileOutputStream("data/json/dependency.json", false);
             fos1.close();
+            File selogger = new File("data/selogger/");
+            File[] files = selogger.listFiles();
+            for(int i=0; i<files.length; i++) {
+                files[i].delete();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         /*
          * ListをJSON形式でファイルに出力
          */
@@ -52,8 +94,8 @@ public class CreateDependency {
         try {
             File f = new File(tPath);
             FileWriter filewriter2 = new FileWriter(f, true);
-            for (TestInfo t : test) {
-                testNameJson += objectMapper.writeValueAsString(t);
+            for (TestInfo dd : dependency) {
+                testNameJson += objectMapper.writeValueAsString(dd);
                 testNameJson += ",";
             }
             filewriter2.write(testNameJson.substring(0, testNameJson.length() - 1) + "]");

@@ -8,22 +8,27 @@ import com.rts_trace.selection.TestSelect;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        File f = new File("data/json");
+        File f = new File("data/json/");
+        File se = new File("data/selogger");
         /* １回目 */
         if (f.list().length == 1) {
             System.out.println("create dependency");
             CreateDependency c = new CreateDependency();
             c.startCreate();
-        } else {
+        } else if(se.list().length ==0) {
             /*
              * ２回目以降
-             * テスト選択と依存関係の更新を実施
+             * テスト選択と行数情報の更新
              */
-            System.out.println("select test and update dependency");
+            System.out.println("select test and update line info dependency");
             TestSelect t = new TestSelect();
             t.startSelect();
             UpdateLineInfo uli = new UpdateLineInfo();
             uli.startUpdateLineInfo();
+        }else{
+            System.out.println("update dependency");
+            CreateDependency c = new CreateDependency();
+            c.startCreate();
         }
     }
 

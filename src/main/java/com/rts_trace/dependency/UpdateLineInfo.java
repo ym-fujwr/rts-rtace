@@ -142,13 +142,13 @@ public class UpdateLineInfo {
 
         /* ファイルの中身削除してる */
         try {
-            FileOutputStream fos1 = new FileOutputStream("data/json/updated.json", false);
+            FileOutputStream fos1 = new FileOutputStream("data/json/dependency.json", false);
             fos1.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         //ファイルに書き込み
-        String tPath = "data/json/updated.json";
+        String tPath = "data/json/dependency.json";
         String testNameJson = "[";
         try {
             File f = new File(tPath);

@@ -30,4 +30,5 @@ public class TestInfo {
     public void setClass(List<ClassInfo> classInfoList) {
         this.classInfoList = classInfoList;
     }
+    
 }
