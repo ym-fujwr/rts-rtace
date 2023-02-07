@@ -12,9 +12,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rts_trace.dependency.info.ClassInfo;
@@ -38,7 +41,44 @@ public class CreateDependency {
         List<TestInfo> dependency = null;
 
         for (int i = 1; i < eventFreqNum; i++) {
-            test.add(getTestInfo(i, ids, range));
+            TestInfo tmp = getTestInfo(i, ids, range);
+            /*
+             * テスト情報に重複があれば，既存の情報に追加する．
+             */
+            for(int j=0;j<test.size();j++){
+                //テストケース情報が被っているか？
+                if(test.get(j).getTestName().equals(tmp.getTestName())){
+                    for(int k=0;k<tmp.getClassInfoList().size();k++){
+                        for(int l=0;l<test.get(j).getClassInfoList().size();l++){
+                            //呼び出し先のクラスが被っているか？
+                            if(tmp.getClassInfoList().get(k).getClassName().equals(test.get(j).getClassInfoList().get(l).getClassName())){
+                                /*重複箇所のライン情報を重複を除いて結合 */
+                                if(!tmp.getClassInfoList().get(k).getLine().equals(test.get(j).getClassInfoList().get(l).getLine())){
+                                    List<String> lineTmp = Stream.concat(tmp.getClassInfoList().get(k).getLine().stream(), test.get(j).getClassInfoList().get(l).getLine().stream())
+                                    .distinct()
+                                    .sorted(Comparator.naturalOrder())
+                                    .collect(Collectors.toList());
+                                    test.get(j).getClassInfoList().get(l).setLine(lineTmp);
+                                    break;
+                                }
+                            }
+                            if(l==test.get(j).getClassInfoList().size()-1){
+                                //呼び出し先のクラスが被っていなかった場合．
+                                test.get(j).getClassInfoList().add(tmp.getClassInfoList().get(k));
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                if(j==test.size()-1){//テストケース情報が被っていなかった場合．
+                    test.add(tmp);
+                    break;
+                }
+            }
+            if(test.size()==0){//1回目
+                test.add(tmp);
+            }
         }
 
         /* 2回目以降の更新フェーズの場合． */
@@ -56,7 +96,7 @@ public class CreateDependency {
             }
 
             /*
-             * dependency.json と 取得したtestから更新
+             * 更新
              */
             for (TestInfo t : test) {
                 for (int i=0; i<dependency.size();i++) {
@@ -66,7 +106,24 @@ public class CreateDependency {
                     }
                 }
             }
-            System.out.println("updated");
+            /*
+             * デバッグ用
+             * 更新するテスト情報を取得している
+             */
+            String tPath = "data/json/update.json";
+            String testNameJson = "[";
+            try {
+                File f = new File(tPath);
+                FileWriter filewriter2 = new FileWriter(f, true);
+                for (TestInfo t : test) {
+                    testNameJson += objectMapper.writeValueAsString(t);
+                    testNameJson += ",";
+                }
+                filewriter2.write(testNameJson.substring(0, testNameJson.length() - 1) + "]");
+                filewriter2.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }else{
             dependency = test;
         }
@@ -189,8 +246,8 @@ public class CreateDependency {
 
         /* テストメソッド名を加工 */
         String t = null;
-        t = ids.get(Integer.parseInt(idOnly.get(0)) - 1).get(7);
         String testMethodName = null;
+        t = ids.get(Integer.parseInt(idOnly.get(0)) - 1).get(7);
         if (t.indexOf("test") > -1) {
             testMethodName = t.substring(0, t.indexOf("#", t.indexOf("#") + 1));
         }
@@ -226,10 +283,6 @@ public class CreateDependency {
         List<String> lines2 = new ArrayList<String>(tmpSet);
         ClassInfo ci = new ClassInfo(classes.get(Integer.parseInt(currentClassId)), lines2);
         classInfoList.add(ci);
-
-        if (testMethodName == null) {
-            System.out.println("eventfreq" + i);
-        }
         TestInfo result = new TestInfo(testMethodName, classInfoList);
         return result;
     }

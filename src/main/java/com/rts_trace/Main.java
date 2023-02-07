@@ -2,6 +2,7 @@ package com.rts_trace;
 
 import java.io.File;
 
+import com.rts_trace.debug.getDiffDependency;
 import com.rts_trace.dependency.CreateDependency;
 import com.rts_trace.dependency.UpdateLineInfo;
 import com.rts_trace.selection.TestSelect;
@@ -30,6 +31,10 @@ public class Main {
             CreateDependency c = new CreateDependency();
             c.startCreate();
         }
+
+        //debug用
+        // getDiffDependency g = new getDiffDependency();
+        // g.start();
     }
 
 }

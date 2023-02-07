@@ -29,9 +29,11 @@ public class TestSelect {
         try {
             File f = new File("test.txt");
             FileWriter fw = new FileWriter(f, false);
+            String result = "";
             for (String s : executeTest) {
-                fw.write(s + "\n");
+                result = result + s + ",";
             }
+            fw.write(result.replace("/", "."));
             fw.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -122,7 +124,7 @@ public class TestSelect {
                         if (isContain(c.getLine(), d.getLineInfo())) {
                             /*
                              * 該当するテストケースを選択
-                             * 必要ないループは抜けるように処理記述
+                             * 必要ないループは抜ける
                              */
                             tmp.add(t.getTestName());
                             break LOOP1;
