@@ -155,10 +155,16 @@ public class TestSelect {
             }
             if (d != 0) {
                 for (String l : lines) {
-                    int i = 1;
+                    int i = 0;
+                    if(c < Integer.parseInt(l)){ //行数は昇順に並んでいる．lより小さかったら以降の処理はいらない．
+                        break;
+                    }
                     while (c - i > 0) {
                         if (c - i == Integer.parseInt(l)) {
                             return true;
+                        }
+                        if(c - i < Integer.parseInt(l)){
+                            break;
                         }
                         i++;
                     }
