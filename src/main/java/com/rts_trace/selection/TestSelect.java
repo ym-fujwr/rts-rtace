@@ -140,6 +140,7 @@ public class TestSelect {
 
     public boolean isContain(List<String> lines, List<DiffLineInfo> diffLines) {
         /* gitdiff情報に関連する行数がaに含まれるかチェック */
+        int diff = 0; //追加情報（行数）を変更前の行数にマッチングさせる．
         for (DiffLineInfo dl : diffLines) {
             int a = Integer.parseInt(dl.getPreStartLine());
             int b = Integer.parseInt(dl.getPreHunkLine());
@@ -156,21 +157,21 @@ public class TestSelect {
             if (d != 0) {
                 for (String l : lines) {
                     int i = 0;
-                    if(c < Integer.parseInt(l)){ //行数は昇順に並んでいる．lより小さかったら以降の処理はいらない．
+                    if(c + diff < Integer.parseInt(l)){ //行数は昇順に並んでいる．lより小さかったら以降の処理はいらない．
                         break;
                     }
-                    while (c - i > 0) {
-                        if (c - i == Integer.parseInt(l)) {
+                    while (c + diff- i > 0) {
+                        if (c + diff - i == Integer.parseInt(l)) {
                             return true;
                         }
-                        if(c - i < Integer.parseInt(l)){
+                        if(c + diff - i < Integer.parseInt(l)){
                             break;
                         }
                         i++;
                     }
                 }
             }
-
+            diff = diff - d + b;
         }
         return false;
     }
