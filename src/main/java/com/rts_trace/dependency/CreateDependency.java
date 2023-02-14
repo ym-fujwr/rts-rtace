@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,7 +15,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rts_trace.dependency.info.ClassInfo;
 import com.rts_trace.dependency.info.FieldVarInfo;
 import com.rts_trace.dependency.info.ReadDataIdInfo;
@@ -121,26 +118,6 @@ public class CreateDependency {
                         break;
                     }
                 }
-            }
-
-            /*
-             * デバッグ用
-             * 更新するテスト情報を取得している
-             */
-            ObjectMapper objectMapper = new ObjectMapper();
-            String tPath = "data/json/update.json";
-            String testNameJson = "[";
-            try {
-                File f = new File(tPath);
-                FileWriter filewriter2 = new FileWriter(f, true);
-                for (TestInfo t : test) {
-                    testNameJson += objectMapper.writeValueAsString(t);
-                    testNameJson += ",";
-                }
-                filewriter2.write(testNameJson.substring(0, testNameJson.length() - 1) + "]");
-                filewriter2.close();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }else{
             dependency = test;
