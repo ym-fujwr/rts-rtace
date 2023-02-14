@@ -14,18 +14,26 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rts_trace.dependency.Json;
 import com.rts_trace.dependency.info.ClassInfo;
+import com.rts_trace.dependency.info.FieldVarInfo;
 import com.rts_trace.dependency.info.TestInfo;
 import com.rts_trace.diffinfo.DiffInfo;
 import com.rts_trace.diffinfo.DiffLineInfo;
 
 public class TestSelect {
     private File gitDiffFile = new File("data/gitdiff.txt");
-
+    List<String> fieldVar = null;
+    Json j = new Json();
+    List<FieldVarInfo> fieldVarInfo = j.readFieldVarInfoJson();
     public void startSelect() {
-        List<DiffInfo> gitDiff = getDiff();
+        List<DiffInfo> gitDiff = getGitDiff();
+        /*
+         * TODO
+         * fieldVarInfo情報を使って，フィールド変数に変更があった場合，gitdiffに擬似情報（まるでそこに変更があったかのような）を追加する．
+         */
         List<String> executeTest = selectTest(gitDiff);
-
+        
         try {
             File f = new File("test.txt");
             FileWriter fw = new FileWriter(f, false);
@@ -45,7 +53,7 @@ public class TestSelect {
      * 
      * @@ a,b c,d @@
      */
-    public List<DiffInfo> getDiff() {
+    public List<DiffInfo> getGitDiff() {
         List<DiffInfo> result = new ArrayList<>();
         List<DiffLineInfo> lineInfo = new ArrayList<>();
         String className = null;
@@ -96,6 +104,7 @@ public class TestSelect {
                     }
                 }
                 br.close();
+                //最後
                 DiffInfo diffInfoTmp = new DiffInfo(className, lineInfo);
                 result.add(diffInfoTmp);
             }

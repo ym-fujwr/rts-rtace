@@ -18,8 +18,8 @@ public class getDiffDependency {
 
     public void start(){
         ObjectMapper objectMapper = new ObjectMapper();
-        Path dependencyPath1 = Paths.get("data/debug/lineInfoChanged.json");
-        Path dependencyPath2 = Paths.get("data/debug/correct.json");
+        Path dependencyPath1 = Paths.get("data/debug/lineInfoUpdated.json");
+        Path dependencyPath2 = Paths.get("data/debug/updated.json");
         try {
             String dependencyJson1 = Files.readString(dependencyPath1);
             String dependencyJson2 = Files.readString(dependencyPath2);
@@ -46,7 +46,7 @@ public class getDiffDependency {
                         filewriter2.write("\n");
                         filewriter2.write(dep1.get(i).getClassInfoList().get(j).getClassName());
                         filewriter2.write("\n");
-                        filewriter2.write("行数更新後\n");
+                        filewriter2.write("更新後\n");
                         filewriter2.write(dep1.get(i).getClassInfoList().get(j).getLine().toString());
                         filewriter2.write("\n");
                         filewriter2.write("正しい情報\n");
