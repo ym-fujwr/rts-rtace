@@ -79,10 +79,10 @@ public class TestSelect {
                         token = Arrays.asList(content.split("[, ]"));
                         a = token.get(1).substring(1);
                         if (token.get(2).indexOf("+") > -1) {
-                            b = "0";
+                            b = "1";
                             c = token.get(2).substring(1);
                             if (token.get(3).indexOf("@@") > -1) {
-                                d = "0";
+                                d = "1";
                             } else {
                                 d = token.get(3);
                             }
@@ -90,7 +90,7 @@ public class TestSelect {
                             b = token.get(2);
                             c = token.get(3).substring(1);
                             if (token.get(4).indexOf("@@") > -1) {
-                                d = "0";
+                                d = "1";
                             } else {
                                 d = token.get(4);
                             }
