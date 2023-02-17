@@ -1,2 +1,14 @@
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/dependency/info/LineInfo.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/debug/getDiffDependency.java
 /Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/dependency/CreateDependency.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/dependency/UpdateLineInfo.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/diffinfo/GetDiffInfo.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/dependency/info/FieldVarInfo.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/diffinfo/DiffInfo.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/dependency/info/ClassInfo.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/selection/TestSelect.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/diffinfo/DiffLineInfo.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/dependency/info/ReadDataIdInfo.java
 /Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/Main.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/dependency/info/TestInfo.java
+/Users/fujiwarayuma/rts-trace/src/main/java/com/rts_trace/dependency/Json.java

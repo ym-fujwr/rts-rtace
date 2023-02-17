@@ -28,10 +28,6 @@ public class TestSelect {
     List<FieldVarInfo> fieldVarInfo = j.readFieldVarInfoJson();
     public void startSelect() {
         List<DiffInfo> gitDiff = getGitDiff();
-        /*
-         * TODO
-         * fieldVarInfo情報を使って，フィールド変数に変更があった場合，gitdiffに擬似情報（まるでそこに変更があったかのような）を追加する．
-         */
         List<String> executeTest = selectTest(gitDiff);
         
         try {

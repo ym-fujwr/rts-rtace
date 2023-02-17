@@ -82,9 +82,15 @@ public class UpdateLineInfo {
                      * だけ変更する．
                      */
                     int stmp = Integer.parseInt(dl.getPreStartLine()) + Integer.parseInt(dl.getPreHunkLine());
-                    int ntmp = Integer.parseInt(dl.getCurHunkLine())
+                    int ntmp = 0;
+                    if(numValueTmp.isEmpty()){
+                        ntmp = Integer.parseInt(dl.getCurHunkLine())
+                            - Integer.parseInt(dl.getPreHunkLine());
+                    }else{
+                        ntmp = Integer.parseInt(dl.getCurHunkLine())
                             + Integer.parseInt(numValueTmp.get(numValueTmp.size() - 1))
                             - Integer.parseInt(dl.getPreHunkLine());
+                    }
                     startLineTmp.add(Integer.valueOf(stmp).toString());
                     numValueTmp.add(Integer.valueOf(ntmp).toString());
                 }
