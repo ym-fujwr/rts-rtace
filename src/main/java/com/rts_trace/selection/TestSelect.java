@@ -26,10 +26,11 @@ public class TestSelect {
     List<String> fieldVar = null;
     Json j = new Json();
     List<FieldVarInfo> fieldVarInfo = j.readFieldVarInfoJson();
+
     public void startSelect() {
         List<DiffInfo> gitDiff = getGitDiff();
         List<String> executeTest = selectTest(gitDiff);
-        
+
         try {
             File f = new File("test.txt");
             FileWriter fw = new FileWriter(f, false);
@@ -100,7 +101,7 @@ public class TestSelect {
                     }
                 }
                 br.close();
-                //最後
+                // 最後
                 DiffInfo diffInfoTmp = new DiffInfo(className, lineInfo);
                 result.add(diffInfoTmp);
             }
@@ -145,7 +146,7 @@ public class TestSelect {
 
     public boolean isContain(List<String> lines, List<DiffLineInfo> diffLines) {
         /* gitdiff情報に関連する行数がaに含まれるかチェック */
-        int diff = 0; //追加情報（行数）を変更前の行数にマッチングさせる．
+        int diff = 0; // 追加情報（行数）を変更前の行数にマッチングさせる．
         for (DiffLineInfo dl : diffLines) {
             int a = Integer.parseInt(dl.getPreStartLine());
             int b = Integer.parseInt(dl.getPreHunkLine());
@@ -154,7 +155,7 @@ public class TestSelect {
             /* 削除の場合 */
             if (b != 0) {
                 for (String l : lines) {
-                    if (a <= Integer.parseInt(l) && Integer.parseInt(l) <= a + b) {
+                    if (a <= Integer.parseInt(l) && Integer.parseInt(l) <= a + b - 1) {
                         return true;
                     }
                 }
@@ -162,14 +163,14 @@ public class TestSelect {
             if (d != 0) {
                 for (String l : lines) {
                     int i = 0;
-                    if(c + diff < Integer.parseInt(l)){ //行数は昇順に並んでいる．lより小さかったら以降の処理はいらない．
+                    if (c + diff < Integer.parseInt(l)) { // 行数は昇順に並んでいる．lより小さかったら以降の処理はいらない．
                         break;
                     }
-                    while (c + diff- i > 0) {
+                    while (c + diff - i > 0) {
                         if (c + diff - i == Integer.parseInt(l)) {
                             return true;
                         }
-                        if(c + diff - i < Integer.parseInt(l)){
+                        if (c + diff - i < Integer.parseInt(l)) {
                             break;
                         }
                         i++;
